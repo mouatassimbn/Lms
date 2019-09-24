@@ -14,7 +14,7 @@ class AddDummyUsers extends Seeder
     {
         //
         $data = [
-        	['id' => '1', 'name' => 'admin', 'email' => 'admin@local.com', 'password' => 'admin'],
+        	['id' => '1', 'name' => 'admin', 'email' => 'admin@test.com', 'password' => 'admin'],
         	['id' => '2', 'name' => 'test user', 'email' => 'test@test.com', 'password' => 'testuser'],
         ];
         foreach ($data as $key => $value) {

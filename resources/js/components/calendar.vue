@@ -102,7 +102,7 @@ export default {
     self.getReservations(); // get reservations from controller
     self.counter = self.evn.length; // set the counter to the size of receivedResrvations array
     self.calendarApi = self.$refs.fullCalendar.getApi(); // set the Calandar API
-    self.calendarApi.setOption("height", 590); // set the height of the calendar
+    self.calendarApi.setOption("height", 730); // set the height of the calendar
     
     
     const clickhandler = function() { // const var pointing to the getNewEvents method
@@ -147,8 +147,8 @@ if (el) {
     :droppable="true"
     :eventOverlap="sameEvent"
     eventTextColor="#fff"
-    minTime="08:00:00"
-    maxTime="19:00:00"
+    minTime="06:00:00"
+    maxTime="20:00:00"
   />
 </template>
 

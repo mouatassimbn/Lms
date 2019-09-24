@@ -16294,7 +16294,7 @@ __webpack_require__.r(__webpack_exports__);
 
     self.calendarApi = self.$refs.fullCalendar.getApi(); // set the Calandar API
 
-    self.calendarApi.setOption("height", 590); // set the height of the calendar
+    self.calendarApi.setOption("height", 730); // set the height of the calendar
 
     var clickhandler = function clickhandler() {
       // const var pointing to the getNewEvents method
@@ -52399,8 +52399,8 @@ var render = function() {
       droppable: true,
       eventOverlap: _vm.sameEvent,
       eventTextColor: "#fff",
-      minTime: "08:00:00",
-      maxTime: "19:00:00"
+      minTime: "06:00:00",
+      maxTime: "20:00:00"
     }
   })
 }

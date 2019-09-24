@@ -7,6 +7,9 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// Import Calendar view stylesheet
+@import './calendar/calendar';
+
 
 .navbar-laravel {
     background-color: #fff;
