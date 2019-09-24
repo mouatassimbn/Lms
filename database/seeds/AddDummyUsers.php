@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\User;
+use App\reservations;
 
 class AddDummyUsers extends Seeder
 {
@@ -14,11 +15,14 @@ class AddDummyUsers extends Seeder
     {
         //
         $data = [
-        	['id' => '1', 'name' => 'admin', 'email' => 'admin@test.com', 'password' => 'admin'],
-        	['id' => '2', 'name' => 'test user', 'email' => 'test@test.com', 'password' => 'testuser'],
+        	['id' => '1', 'name' => 'admin', 'email' => 'admin@test.com', 'password' => 'testuser']
         ];
         foreach ($data as $key => $value) {
         	User::create($value);
         }
+
+        factory(App\User::class, 10)->create()->each(function($user) {
+            $user->Reservations()->save(factory(App\reservations::class)->make());
+        });
     }
 }
