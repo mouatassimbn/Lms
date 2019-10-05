@@ -26,7 +26,7 @@
                                 <div class="col-10">
                                     <h6 class="lead">{{ $reservation->reservation_name }} </h6>
                                     <p> {{ $reservation->start }} </p>
-                                    <p> For : {{ $reservation->user->name }} </p>
+                                    <p > For : {{ $reservation->user->name }} </p>
                                     <p>Status :
                                         @if($reservation->canceld == 0)
                                         <span class="border border-success m-1 p-1 text-success rounded-lg">Active</span>

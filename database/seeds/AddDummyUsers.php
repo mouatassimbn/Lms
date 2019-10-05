@@ -15,7 +15,7 @@ class AddDummyUsers extends Seeder
     {
         //
         $data = [
-        	['id' => '1', 'name' => 'admin', 'email' => 'admin@test.com', 'password' => 'testuser']
+        	['id' => '1', 'name' => 'admin', 'email' => 'admin@test.com', 'password' => bcrypt('testuser')]
         ];
         foreach ($data as $key => $value) {
         	User::create($value);
