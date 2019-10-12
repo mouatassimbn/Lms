@@ -23,6 +23,17 @@ class ReservationsController extends Controller
     public function index()
     {
         // Show calendar
+        return view('calendar.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function get(Request $request)
+    {
+        //get Reservations
         $reservations = reservations::all();
         $reservation_list = [];
         foreach ($reservations as $key => $reservation) {
@@ -37,17 +48,7 @@ class ReservationsController extends Controller
         }
         $calendar_details =  $reservation_list;
 
-        return view('calendar.index', compact('calendar_details'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json($calendar_details);
     }
 
     /**
@@ -58,13 +59,14 @@ class ReservationsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // create a reservation in database
         reservations::create(request()->validate([
             'reservation_name' => ['required'],
             'start' => ['required'],
             'end' =>['required']
         ]) + ['user_id' => auth()->id()]);
-        return 200;
+
+        return response()->json(request()->input());
         
     }
 

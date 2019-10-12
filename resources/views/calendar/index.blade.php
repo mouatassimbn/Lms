@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="col-9 p-2 rounded-lg" style="background-color:white;">
-            <calendar v-bind:event="{{ json_encode($calendar_details) }}" class="p-2"></calendar>
+            <calendar class="p-2"></calendar>
         </div>
     </div>
     <div class="fixed-bottom" id="calendarViewFooter">

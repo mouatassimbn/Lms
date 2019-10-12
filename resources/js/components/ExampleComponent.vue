@@ -3,10 +3,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Example Component</div>
+                    <div class="card-header">Testing Vuex</div>
 
                     <div class="card-body">
-                        I'm an example component.
+                        {{ reservation }}
                     </div>
                 </div>
             </div>
@@ -15,9 +15,20 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
     export default {
+        data() {
+            return {
+                reservation: "hello"
+            }
+        },
+        computed: mapGetters(['allReservations']),
+        methods: {
+            ...mapActions(['fetchResrvations']),
+        },
         mounted() {
-            console.log('Component mounted.')
+            console.log(this.$store.getters.allReservations);//('fetchResrvations');
+            console.log('Component mounted.');
         }
     }
 </script>

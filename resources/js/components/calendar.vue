@@ -11,6 +11,7 @@ import interaction from "@fullcalendar/interaction"; // import the interation mo
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction"; // import the interaction modul for the drag and drop
 import { Calendar } from "@fullcalendar/core"; // import the calandar facade
 import { EventBus } from "./EventBus.js";
+import { mapGetters, mapActions, mapState } from "vuex";
 
 // Start of vue componnent
 
@@ -24,28 +25,26 @@ export default {
       evn: [], // contains the receivedReservations
       newEvn: [], // contains the new dropped reservations from user
       calendarApi: null, // contains the FullCalendar API
-      counter: 0, // counts the number of received reservations to now which are dropped from user
-      // success: false // the response of the server after submiting the reservations
+      counter: 0 // counts the number of received reservations to now which are dropped from user
     };
   },
-  props: ["event"], // the atrribute that the gets the reservations from controller
   methods: {
+    ...mapActions(["fetchResrvations", "createReservations"]),
     getNewEvents() {
       // gets new reservations dropped by user
       let allEvents = this.calendarApi.getEvents(); // Get all events in the calendar
       if (allEvents.length > this.counter) {
-        for (let i = this.counter; i < allEvents.length; i++) {
+        for (this.counter; this.counter < allEvents.length; this.counter++) {
           // loop through the events
           this.newEvn.push({
             // pushes the new Reservation(obj) to array
-            title: allEvents[i].title, // add title
-            start: this.toDateTime(allEvents[i].start.toJSON()), // add start
-            end: this.toDateTime(allEvents[i].end.toJSON()) // add end
+            title: allEvents[this.counter].title, // add title
+            start: this.toDateTime(allEvents[this.counter].start.toJSON()), // add start
+            end: this.toDateTime(allEvents[this.counter].end.toJSON()) // add end
           });
         }
-        this.counter++; // increment the counter
         this.sendEvents(); // send events to  the DB
-      };
+      }
     },
     toDateTime(str) {
       // Parse string to DateTime
@@ -62,34 +61,33 @@ export default {
       return pt1 + " " + pt2; //  return rebuilded string with correct DateTime and commit it to state
     },
     sendEvents() {
-      // Send reservations to DB
-      this.$http
-        .post(
-          // Send a post http request to controller via /calendar
-          "/calendar",
-          JSON.stringify({
-            reservation_name: this.newEvn[0].title, // add title to reservations name
-            start: this.newEvn[0].start, // add start date
-            end: this.newEvn[0].end // add end date
-          }) // JSON encoding
-        )
-        .then(request => {
-          // response of controller
-          // this.success = true; // result of the request
-          window.location.reload();  // reload the page
-        });
+      for (let i = 0; i < this.newEvn.length; i++) {
+        this.$store
+          .dispatch(
+            "createReservations",
+            {
+              "reservation_name": this.newEvn[i].title, // add title to reservations name
+              "start": this.newEvn[i].start, // add start date
+              "end": this.newEvn[i].end // add end date
+            }
+          ).then( (response) => {
+            window.location.reload();
+          });
+      }
     },
     getReservations() {
+      let reservation = this.$store.state.reservations.reservations;
       //Get Reservations from db
-      for (let i = 0; i < this.event.length; i++) {
+      let counter = this.$store.getters.reservationCount;
+      for (let i = 0; i < counter; i++) {
         // loop through reservations
         this.evn.push({
           // parse data
-          id: this.event[i].id, // add id
-          title: this.event[i].title, // add title
-          isAllDay: this.event[i].isAllDay, // is all day Default(false)
-          start: this.event[i].start.date, // add start
-          end: this.event[i].end.date // add end
+          id: reservation[i].id, // add id
+          title: reservation[i].title, // add title
+          isAllDay: reservation[i].isAllDay, // is all day Default(false)
+          start: reservation[i].start.date, // add start
+          end: reservation[i].end.date // add end
         });
       }
     },
@@ -97,21 +95,45 @@ export default {
       return stillEvent.title !== movingEvent.title;
     }
   },
+  computed: {
+    ...mapGetters(["reservationCount"]),
+    ...mapState(["reservations"])
+  },
+  created() {
+    this.$store.dispatch("fetchResrvations").then(() => {
+      this.getReservations(); // get reservations from controller
+      this.counter = this.evn.length; // set the counter to the size of receivedResrvations array
+    });
+  },
   mounted() {
     let self = this;
-    self.getReservations(); // get reservations from controller
-    self.counter = self.evn.length; // set the counter to the size of receivedResrvations array
     self.calendarApi = self.$refs.fullCalendar.getApi(); // set the Calandar API
     self.calendarApi.setOption("height", 730); // set the height of the calendar
-    
-    
-    const clickhandler = function() { // const var pointing to the getNewEvents method
+
+    const clickhandler = function() {
+      // const var pointing to the getNewEvents method
       self.getNewEvents();
     };
-    EventBus.$on("i-got-clicked", clickhandler); // listen for the Reserve button click
 
+    EventBus.$on("i-got-clicked", clickhandler); // listen for the Reserve button click
   }
 };
+
+// make reservations diffrent colors depending on lab name
+function labColor(lab) {
+  const colorsArray = ["#D64933", "#2B303A", "#F28123"];
+  switch (lab.substring(0,3)) {
+    case "NYA":
+      return colorsArray[0]
+      break;
+    case "NYB":
+      return colorsArray[1]
+      break;
+    case "NYC":
+      return colorsArray[2]
+      break;
+  }
+}
 
 let el = document.getElementById("labTypes"); // the dragable components
 if (el) {
@@ -128,11 +150,13 @@ if (el) {
           title: eventEl.innerText,
           duration: "01:00:00",
           editable: true,
+          backgroundColor: labColor(eventEl.innerText)
         };
       }
     });
   });
 }
+
 </script>
 
 <template>

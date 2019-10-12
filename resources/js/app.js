@@ -4,20 +4,23 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import 'bootstrap/dist/js/bootstrap.bundle'; // import bootstrap
-import Vuex from 'vuex'; // import vuex
 
-require('./bootstrap');
+import 'bootstrap/dist/js/bootstrap.bundle'; // import bootstrap
+require('./bootstrap'); // require bootrstap.js file
+
+import store  from './store/index.js'; // Import state
+import VueResource from 'vue-resource'; // import vue-ressource
 
 window.Vue = require('vue'); // use Vuejs
-
-var VueResource = require('vue-resource'); // import vue-ressource
-Vue.use(VueResource); // append vue-ressource to vue
-Vue.use(Vuex); // append vuex to vue
 Vue.config.productionTip = false; // turn off production tip concole.log
+Vue.use(VueResource); // append vue-ressource to vue
+window.axios.defaults.headers.common = {
+    'X-Requested-With': 'XMLHttpRequest',
+};
 
-Vue.http.options.root = '/root';
-Vue.http.headers.common['Authorization'] = 'Basic YXBpOnBhc3N3b3Jk';
+// Import componnents
+import calendar from './components/calendar.vue';
+import reserve from './components/reserveButton.vue';
 
 /**
  * The following block of code may be used to automatically register your
@@ -31,8 +34,8 @@ Vue.http.headers.common['Authorization'] = 'Basic YXBpOnBhc3N3b3Jk';
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('calendar', require('./components/calendar.vue').default);
-Vue.component('reserve', require('./components/reserveButton.vue').default);
+// Vue.component('calendar', require('./components/calendar.vue').default);
+// Vue.component('reserve', require('./components/reserveButton.vue').default);
 
 
 /**
@@ -43,10 +46,9 @@ Vue.component('reserve', require('./components/reserveButton.vue').default);
 
 const app = new Vue({
     el: '#app',
+    store,
+    components : {
+        calendar,
+        reserve
+    }
 });
-
-
-// let button = document.getElementById("reservationButton");
-// button.onclick = function () {
-//     cal.methods.outText();
-// };
