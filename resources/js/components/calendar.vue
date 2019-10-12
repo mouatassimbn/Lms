@@ -63,14 +63,12 @@ export default {
     sendEvents() {
       for (let i = 0; i < this.newEvn.length; i++) {
         this.$store
-          .dispatch(
-            "createReservations",
-            {
-              "reservation_name": this.newEvn[i].title, // add title to reservations name
-              "start": this.newEvn[i].start, // add start date
-              "end": this.newEvn[i].end // add end date
-            }
-          ).then( (response) => {
+          .dispatch("createReservations", {
+            reservation_name: this.newEvn[i].title, // add title to reservations name
+            start: this.newEvn[i].start, // add start date
+            end: this.newEvn[i].end // add end date
+          })
+          .then(response => {
             window.location.reload();
           });
       }
@@ -87,12 +85,27 @@ export default {
           title: reservation[i].title, // add title
           isAllDay: reservation[i].isAllDay, // is all day Default(false)
           start: reservation[i].start.date, // add start
-          end: reservation[i].end.date // add end
+          end: reservation[i].end.date, // add end
+          backgroundColor: this.labColor(reservation[i].title)
         });
       }
     },
     sameEvent(stillEvent, movingEvent) {
       return stillEvent.title !== movingEvent.title;
+    },
+    labColor(lab) {
+      const colorsArray = ["#D64933", "#2B303A", "#F28123"];
+      switch (lab.substring(0, 3)) {
+        case "NYA":
+          return colorsArray[0];
+          break;
+        case "NYB":
+          return colorsArray[1];
+          break;
+        case "NYC":
+          return colorsArray[2];
+          break;
+      }
     }
   },
   computed: {
@@ -122,15 +135,15 @@ export default {
 // make reservations diffrent colors depending on lab name
 function labColor(lab) {
   const colorsArray = ["#D64933", "#2B303A", "#F28123"];
-  switch (lab.substring(0,3)) {
+  switch (lab.substring(0, 3)) {
     case "NYA":
-      return colorsArray[0]
+      return colorsArray[0];
       break;
     case "NYB":
-      return colorsArray[1]
+      return colorsArray[1];
       break;
     case "NYC":
-      return colorsArray[2]
+      return colorsArray[2];
       break;
   }
 }
@@ -156,7 +169,6 @@ if (el) {
     });
   });
 }
-
 </script>
 
 <template>

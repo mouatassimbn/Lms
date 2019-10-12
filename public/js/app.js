@@ -16262,11 +16262,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendEvents: function sendEvents() {
       for (var i = 0; i < this.newEvn.length; i++) {
         this.$store.dispatch("createReservations", {
-          "reservation_name": this.newEvn[i].title,
+          reservation_name: this.newEvn[i].title,
           // add title to reservations name
-          "start": this.newEvn[i].start,
+          start: this.newEvn[i].start,
           // add start date
-          "end": this.newEvn[i].end // add end date
+          end: this.newEvn[i].end // add end date
 
         }).then(function (response) {
           window.location.reload();
@@ -16290,13 +16290,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           // is all day Default(false)
           start: reservation[i].start.date,
           // add start
-          end: reservation[i].end.date // add end
-
+          end: reservation[i].end.date,
+          // add end
+          backgroundColor: this.labColor(reservation[i].title)
         });
       }
     },
     sameEvent: function sameEvent(stillEvent, movingEvent) {
       return stillEvent.title !== movingEvent.title;
+    },
+    labColor: function labColor(lab) {
+      var colorsArray = ["#D64933", "#2B303A", "#F28123"];
+
+      switch (lab.substring(0, 3)) {
+        case "NYA":
+          return colorsArray[0];
+          break;
+
+        case "NYB":
+          return colorsArray[1];
+          break;
+
+        case "NYC":
+          return colorsArray[2];
+          break;
+      }
     }
   }),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_6__["mapGetters"])(["reservationCount"]), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_6__["mapState"])(["reservations"])),
@@ -68296,6 +68314,7 @@ var getters = {
   }
 };
 var actions = {
+  // Fetch reservations from db
   fetchResrvations: function () {
     var _fetchResrvations = _asyncToGenerator(
     /*#__PURE__*/
@@ -68308,7 +68327,15 @@ var actions = {
               commit = _ref.commit;
               _context.next = 3;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/reservations').then(function (response) {
-                commit('setReservations', response.data);
+                var todayTime = new Date();
+
+                for (var i = 0; i < response.data.length; i++) {
+                  var comparedDate = new Date(response.data[i].end.date);
+
+                  if (comparedDate.getTime() > todayTime.getTime()) {
+                    commit('setReservations', response.data[i]);
+                  }
+                }
               });
 
             case 3:
@@ -68328,6 +68355,7 @@ var actions = {
 
     return fetchResrvations;
   }(),
+  // Creat reservations in db
   createReservations: function () {
     var _createReservations = _asyncToGenerator(
     /*#__PURE__*/
@@ -68365,7 +68393,7 @@ var actions = {
 };
 var mutations = {
   setReservations: function setReservations(state, reservation) {
-    return state.reservations = reservation;
+    return state.reservations.push(reservation);
   },
   newReservations: function newReservations(state, reservation) {
     return state.reservations.unshift(reservation);

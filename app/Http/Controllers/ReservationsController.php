@@ -37,14 +37,14 @@ class ReservationsController extends Controller
         $reservations = reservations::all();
         $reservation_list = [];
         foreach ($reservations as $key => $reservation) {
-            if($reservation->canceld == false)
-            $reservation_list[] = Calendar::event(
-                $reservation->reservation_name, // reservation title
-                false, // allday
-                new \DateTime($reservation->start), // reservation start
-                new \DateTime($reservation->end),   // reservation end
-                $reservation->id // reservation id
-            );
+            if ($reservation->canceld == false)
+                $reservation_list[] = Calendar::event(
+                    $reservation->reservation_name, // reservation title
+                    false, // allday
+                    new \DateTime($reservation->start), // reservation start
+                    new \DateTime($reservation->end),   // reservation end
+                    $reservation->id // reservation id
+                );
         }
         $calendar_details =  $reservation_list;
 
@@ -63,11 +63,10 @@ class ReservationsController extends Controller
         reservations::create(request()->validate([
             'reservation_name' => ['required'],
             'start' => ['required'],
-            'end' =>['required']
+            'end' => ['required']
         ]) + ['user_id' => auth()->id()]);
 
         return response()->json(request()->input());
-        
     }
 
     /**
